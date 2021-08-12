@@ -3,7 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  fhirbaseUrl: "https://fhir.bmt7d3c9csfz.static-test-account.isccloud.io",
+  xapikey: "NFIBzGW6r8a3ccRYyTGaX3mR5sRRUuDc4dxvBBe0"
 };
 
 /*

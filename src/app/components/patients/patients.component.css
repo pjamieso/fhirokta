@@ -1,0 +1,18 @@
+.previousButton {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    display:inline-block;
+}
+
+.nextButton {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    display:inline-block;
+}
+
+.divider{
+    width:740px;
+    height:auto;
+    display:inline-block;
+}
