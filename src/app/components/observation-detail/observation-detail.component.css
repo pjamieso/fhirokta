@@ -1,0 +1,8 @@
+.detailBox {
+margin-top: 10px;
+margin-bottom: 10px;
+box-sizing: content-box;
+width: 70%;
+border: solid #5B6DCD 10px;
+padding: 10px;
+}

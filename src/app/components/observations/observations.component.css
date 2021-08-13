@@ -6,10 +6,18 @@
     width: 140px;
 }
 
+.returnLink {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    margin-left: 150px;
+    width: 140px;
+    display:inline-block; 
+}
+
 .nextButton {
     margin-top: 10px;
     margin-bottom: 20px;
-    margin-left: 500px;
+    margin-left: 150px;
     width: 140px;
     display:inline-block;
 }

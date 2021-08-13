@@ -1,6 +1,6 @@
 export class Link {
-    relation: string;
-    url: string
+    relation: string = "";
+    url: string = "";
 
     constructor( theLink: any ) {
         this.relation = theLink.relation;

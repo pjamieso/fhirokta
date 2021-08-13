@@ -33,6 +33,13 @@ export class Patient {
         this.gender = patietResource.gender;
         this.birthDate = new Date( patietResource.birthDate );
         this.maritalStatus = patietResource.maritalStatus.text;
+        if ( this.maritalStatus === 'M' ) {
+            this.maritalStatus = "Married";
+        } else {
+            if ( this.maritalStatus === 'S' ) {
+                this.maritalStatus = "Single";
+            }
+        }
 
         if ( patietResource.hasOwnProperty( 'deceasedDateTime' ) ) {
             this.deceasedDate = new Date( patietResource.deceasedDateTime );

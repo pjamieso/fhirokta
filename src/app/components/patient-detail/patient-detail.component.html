@@ -1,0 +1,15 @@
+<div class="container">
+    <div class="detailBox">
+        <div *ngIf="patient != undefined">
+            <p>Name: {{patient.firstName}} {{patient.lastName}}</p>
+            <p>Gender: {{patient.gender}}</p>
+            <p *ngIf="patient.deceasedDate !=undefined">Deceased: {{patient.deceasedDate | date:'shortDate'}}</p>
+            <p>Marital Status: {{patient.maritalStatus}}</p>
+            <p>Address: {{patient.address.toString()}}</p>
+            <p>Language: {{patient.language}}</p>
+            <p *ngIf="patient.homePhone !=undefined">Home Phone: {{patient.homePhone}}</p>
+            <p *ngIf="patient.maidenName !=undefined">Mother's Maiden Name: {{patient.maidenName}}</p>
+            <p *ngIf="patient.mrnIdentifier !=undefined">MRN: {{patient.mrnIdentifier}}</p>
+        </div>
+    </div>
+</div>

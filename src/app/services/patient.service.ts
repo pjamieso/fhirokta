@@ -9,13 +9,28 @@ import { Patient } from '../common/patient';
   providedIn: 'root'
 } )
 export class PatientService {
-
+  private lastUrl: string = "";
   private patientUrl = environment.fhirbaseUrl + '/Patient?_count=10';
   constructor( private httpClient: HttpClient ) { }
 
 
   getPatientList(): Observable<GetResponsePatients> {
+    this.lastUrl = this.patientUrl;
     return this.httpClient.get<GetResponsePatients>( this.patientUrl );
+  }
+
+  getPatientListByUrl( url: string ): Observable<GetResponsePatients> {
+    this.lastUrl = url;
+    return this.httpClient.get<GetResponsePatients>( url );
+  }
+
+  getPatientListByLastUrl(): Observable<GetResponsePatients> {
+    if ( this.lastUrl !== '' ) {
+      return this.getPatientListByUrl( this.lastUrl );
+    }
+    else {
+      return this.getPatientList();
+    }
   }
 
 }

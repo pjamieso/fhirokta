@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <h1 class="mt-3 mb-3">Patients</h1>
             <table class="table table-hover">
-                <thead class="table-dark">
+                <thead (click)="removePatientSelection()" class="table-dark">
                     <tr>
                         <td>Id</td>
                         <td>First Name</td>
@@ -14,21 +14,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let tempPatient of patients; let i = index">
+                    <tr (click)="selectPatient(tempPatient)" *ngFor="let tempPatient of patients; let i = index">
                         <td>{{tempPatient.id}}</td>
                         <td>{{tempPatient.firstName}}</td>
                         <td>{{tempPatient.lastName}}</td>
                         <td>{{tempPatient.gender}}</td>
                         <td>{{tempPatient.birthDate | date:'shortDate'}}</td>
+                        <td><a routerLink="/observations/{{tempPatient.id}}" routerLinkActive="active-link">Get
+                                Observations</a></td>
                     </tr>
                 </tbody>
             </table>
-            <button *ngIf="patients.length> 0" class="btn btn-primary previousButton">Previous</button>
-            <div class="divider"></div>
-            <button *ngIf="patients.length> 0" class="btn btn-primary nextButton">Next</button>
-            <div class="left">
-                <button (click)="getPatients()" class="btn btn-info">Get Patients</button>
+            <div class="row">
+                <button (click)="getMorePatients('previous')" *ngIf="patients.length> 0"
+                    class="btn btn-primary previousButton">Previous</button>
+
+                <button (click)="getMorePatients('next')" *ngIf="patients.length> 0"
+                    class="btn btn-primary nextButton">Next</button>
             </div>
+
+            <div *ngIf="selectedPatient != undefined">
+                <app-patient-detail [patient]="selectedPatient"></app-patient-detail>
+            </div>
+            <!-- <div class="left">
+                <button (click)="getPatients()" class="btn btn-info">Get Patients</button>
+            </div> -->
         </div>
     </div>
 </div>

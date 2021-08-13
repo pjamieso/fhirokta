@@ -1,0 +1,17 @@
+<div class="container">
+    <div class="detailBox">
+        <div *ngIf="observation != undefined">
+            <p>Observation Name: {{observation.display}}</p>
+            <p>Status: {{observation.status}}</p>
+            <p *ngIf="observation.issued !=undefined">Issued: {{observation.issued | date:'shortDate'}}</p>
+            <p>Loinc Code: {{observation.loincCode}}</p>
+            <p>ValueQuantity: {{observation.valueQuantity}}</p>
+            <p>ValueUnit: {{observation.valueUnit}}</p>
+            <div *ngFor="let tempComponent of observation.components; let i = index">
+                <p>Component Name: {{tempComponent.display}}</p>
+                <p>Component Value: {{tempComponent.valueQuantity}}</p>
+                <p>Component Unit: {{tempComponent.valueUnit}}</p>
+            </div>
+        </div>
+    </div>
+</div>
