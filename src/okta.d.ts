@@ -1,1 +1,1 @@
-declare module '@okta/okta-signin-widget';
+declare module 'node_modules/@okta/okta-signin-widget';

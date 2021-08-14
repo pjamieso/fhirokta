@@ -4,9 +4,14 @@
 
 export const environment = {
   production: false,
-  fhirbaseUrl: "https://fhir.bmt7d3c9csfz.static-test-account.isccloud.io",
-  xapikey: "NFIBzGW6r8a3ccRYyTGaX3mR5sRRUuDc4dxvBBe0"
+  fhirbaseUrl: "https://fhirauth.bmt7d3c9csfz.static-test-account.isccloud.io/oauth2",
+  xapikey: ''
 };
+
+//this is the api key for the InterSystems FHIR Accelerator Service
+//xapikey: "NFIBzGW6r8a3ccRYyTGaX3mR5sRRUuDc4dxvBBe0"
+//this is the api endpoint for apikey request
+//fhirbaseUrl: "https://fhir.bmt7d3c9csfz.static-test-account.isccloud.io",
 
 /*
  * For easier debugging in development mode, you can import the following file

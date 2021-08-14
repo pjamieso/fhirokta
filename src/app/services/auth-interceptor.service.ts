@@ -1,6 +1,7 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from, Observable } from 'rxjs';
+import { OktaAuthService } from '@okta/okta-angular';
+import { from, lastValueFrom, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable( {
@@ -8,7 +9,7 @@ import { environment } from 'src/environments/environment';
 } )
 export class AuthInterceptorService implements HttpInterceptor {
 
-  constructor() { }
+  constructor( private oktaAuthService: OktaAuthService ) { }
 
   intercept( req: HttpRequest<any>, next: HttpHandler ): Observable<HttpEvent<any>> {
     return from( this.handleAccess( req, next ) );
@@ -30,6 +31,18 @@ export class AuthInterceptorService implements HttpInterceptor {
       } );
     }
 
-    return next.handle( req ).toPromise();
+    if ( ( securedEndpoints.some( url => req.urlWithParams.includes( url ) ) ) && ( environment.xapikey == '' ) ) {
+
+      const accessToken = await this.oktaAuthService.getAccessToken();
+      //clone the request and add new header with x-api-key
+      req = req.clone( {
+        setHeaders: {
+          Authorization: 'Bearer ' + accessToken
+        }
+      } );
+    }
+
+
+    return lastValueFrom( next.handle( req ) );
   }
 }
