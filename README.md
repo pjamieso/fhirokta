@@ -45,16 +45,16 @@ This document is organized into several sections, to walk you through enabling y
 Before discussing the demo code, it is useful to provide definitions of some key security concepts.
 
 - Authentication is the process of recognizing a user&#39;s identity. It is the mechanism of associating an incoming request with a set of identifying credentials. An Internet-scale authentication protocol needs to be able to determine identity across network and security boundaries.
--
+
 - An identity provider (abbreviated IdP or IDP) is a system entity that creates, maintains, and manages identity information and authentication services for applications within a distributed network. Authentication management is a non-trivial problem for enterprise scale applications.
 
 Okta can act as an identity provider, as well as integrating with other Identity providers. We will use the Okta identity provider for this sample application.
 
 - Authorization is a security mechanism to determine access levels or user/client privileges related to system resources including files, services, computer programs, data and application features. The process involves granting or denying access to network resources based on the user&#39;s identity.
--
-- The FHIR demo application makes use of a custom Okta authorization server, which will supply a JSON Web Token (JWT) that will ultimately be consumed by the IRIS FHIR accelerator service. A valid token will enable the service to release resources to authorized users.
--
-- Other common OAuth 2.0 terms include:
+
+The FHIR demo application makes use of a custom Okta authorization server, which will supply a JSON Web Token (JWT) that will ultimately be consumed by the IRIS FHIR accelerator service. A valid token will enable the service to release resources to authorized users.
+
+Other common OAuth 2.0 terms include:
 
 - **Resource Owner** : The user that owns the protected resources and can grant access to them. For the demo app, the resource owner is a physician with the right to view all patients&#39; records.
 - **Client** : The client is the system that requires access to the protected resources. To access resources, the client must hold the appropriate access token. The demo client is our Angular Application for retrieving and displaying patients and their observations.
@@ -68,8 +68,10 @@ A sequence diagram shows how these actors relate. The diagram depicts the OAuth 
 
 ## Creating a Custom Okta Authorization Server
 
-- For our application to create the proper JWT token that can be understood by the IRIS FHIR Accelerator Service, **we must create a custom** Okta Authorization Server. After creating your free Okta account, login and under the security tab, click on +Add Authorization Server.
-- ![Okta Custom Authorization Server](Images/OktaCustomServer.png)
+For our application to create the proper JWT token that can be understood by the IRIS FHIR Accelerator Service, **we must create a custom** Okta Authorization Server. After creating your free Okta account, login and under the security tab, click on +Add Authorization Server.
+
+![Okta Custom Authorization Server](Images/OktaCustomServer.png)
+
 The demo app uses the custom server&#39;s name fhirauth – you can use any name you like. Most of the settings are filled in for you, except the audience. The audience is the endpoint for the FHIR server, the resource we are trying to protect. In my case that is the IRIS FHIR Accelerator Server at: [https://fhirauth.bmt7d3c9csfz.static-test-account.isccloud.io](https://fhirauth.bmt7d3c9csfz.static-test-account.isccloud.io/), The endpoint for your accelerator instance the endpoint will be different, but similar.
 
 The issuer url is an authorization endpoint which we will need when integrating our Okta Authorization Server with the IRIS FHIR Accelerator Service. This can be found in the Okta Issuer setting, which for this example is [https://dev-5420746.okta.com/OAuth2/aus1g315d02g6rklZ5d7](https://dev-5420746.okta.com/OAuth2/aus1g315d02g6rklZ5d7). Again, your issuer endpoint will be unique and slightly different.
@@ -80,13 +82,13 @@ The &quot;scope&quot; claim should be set to the string: &quot;openid profile em
 
 We also need to allow Cross-Origin Resource Sharing (CORS) for our single page web application. CORS is an HTTP-header based mechanism that allows a server to indicate which origins (domain, scheme, or port), other than its own, from which a browser should permit loading resources. CORS relies on a mechanism by which browsers make a &quot;preflight&quot; request to the server hosting the cross-origin resource, to check that the server will permit the actual request. In the preflight, the browser sends headers that will be used in the actual request. If you open up chrome development tools under the network tab you can see these preflight requests. Under the Okta API management tab, you can add trusted origins. We need to add &quot;http://localhost:4200&quot; so that our token requests from our sample angular application are not blocked.
 
-## registering an application with Okta
+## Registering an application with Okta
 
 Okta permits us to register a small number of applications for free. Under the applications tab, click &quot;create app integration&quot;. Name the application anything you want, in my case OktaFHIRDemo. There are several key pieces of information Okta generates that must be copied and used with the IRIS FHIR Accelerator service and our demo application. They include the Client Id, which looks something like: 0oa1ft32hbJVqlExn5d7 and the Okta Domain, which has the form: dev-5420746.okta.com. Our application type is &quot;single page application&quot;. Single Page Apps (SPAs) offer a great user experience in the browser because they enable interactivity without full page transitions. However, securing SPAs is a challenge because the browser is an inherently insecure environment. When SPAs were new and browsers were more limited in their capabilities, OAuth 2.0 and its sister standard, OpenID Connect (OIDC) offered a security approach called the _Implicit flow_. Today, Proof Key for Code Exchange (PKCE) provides a much more secure solution for protecting SPAs. If you wish to learn more, please see [https://OAuth.net/2/pkce/](https://oauth.net/2/pkce/), but for now select PKCE and Authorization Code as the grant type for the Okta app registration. Authorization code is the most common OAuth 2.0 grant types used by SPAs (together with PKCE), Web Apps, Mobile and native/desktop apps.
 
 After the user is logged in, Okta will send tokens to an endpoint of our choosing. This field is called the redirect URI, choose: [http://localhost:4200/login/callback](http://localhost:4200/login/callback), and for logout choose: [http://localhost:4200](http://localhost:4200/), which is the root of the application.
 
-## Registering an OAuth Authentication Server in the IRIS fhir accelerator
+## Registering an OAuth Authentication Server in the IRIS FHIR Accelerator Service
 
 The IRIS FHIR Accelerator Service has an OAuth2.0 tab, which allows us to register different Authentication/Authorization Servers. Since we have already configured an OKTA authorization server, we merely need to &quot;_create_&quot; an authentication server (choosing the OKTA external authentication server) and provide the Issuer Discovery URL, which in our example was generated by Okta as [https://dev-5420746.okta.com/OAuth2/aus1g315d02g6rklZ5d7](https://dev-5420746.okta.com/oauth2/aus1g315d02g6rklZ5d7). (your url is unique and slightly different)
 
@@ -94,7 +96,7 @@ We also must register our application with the IRIS FHIR Accelerator server usin
 
 We have now completed all the server configurations for using OAuth2.0 in the IRIS FHIR Accelerator Service and with OKTA.
 
-## Basic client Okata Auth APP Framework
+## Basic Client Okata Auth APP Framework
 
 The Oktaauthdemo is a simple Angular application with two HTTP services, a Patient and an Observation Service. If there was no need for security these services would retrieve patient and observation information (using a simple HTTP FHIR request) and would display the results in their respective Patients and Observations components. However, we will use **Okta guards** to make the services inaccessible if the user is not logged in. You can see the angular routes and components below. Notice that the &#39;PatientsComponent&#39; and the &#39;ObservationsComponent&#39; are protected by OktaAuthGuards.
 
@@ -139,14 +141,15 @@ scopes: [&#39;openid&#39;, &#39;profile&#39;, &#39;email&#39;, &#39;user/\*.read
 Notice that of these are the same configuration parameters we use in the IRIS FHIR Accelerator Service and Okta Authorization Server.
 
 The login component relies on the okta signin widget and Okta SDK. The constructor for the login component uses the OktaAuthService and initializes the oktaSignIn component It then waits for a successful response status before redirecting to the OktaCallBackComponent.
-![Okta Cache](Images/OktaSignIn.png) .
+
+[Okta Cache](Images/OktaSignIn.png) .
 
 
 Note that the sign in component can be customized to provide a logo at the top and through a feature setting can provide a simple registration form and process.
 
 The OktaCallbackComponent caches the access token if registration is successful as shown below with Chrome Development tools.
 
-![Okta Cache](Images/OktaCache.png) .
+[Okta Cache](Images/OktaCache.png) .
 
 If the user successfully logs in, the routes for Patient and Observation retrieval are activated. However, for them to get access to the protected FHIR service, the client applications must send a bearer &quot;access token&quot;.
 
@@ -154,13 +157,13 @@ The simplest way to do this is by creating an auth-interceptor-service. The serv
 
 The code below shows how this is done:
 
-privateasynchandleAccess( req: HttpRequest\&lt;any\&gt;, next: HttpHandler ): Promise\&lt;HttpEvent\&lt;any\&gt;\&gt; {
+private asynchandleAccess( req: HttpRequest\&lt:any, next: HttpHandler ): Promise<<HttpEvent>:any>> {
 
 //only add an access or key for secured endpoints
 
 constsecuredEndpoints = [environment.fhirbaseUrl];
 
-if ( ( securedEndpoints.some( url=\&gt;req.urlWithParams.includes( url ) ) ) &amp;&amp; ( environment.xapikey == &#39;&#39; ) ) {
+if ( ( securedEndpoints.some( url=>req.urlWithParams.includes( url ) ) ) &amp;&amp; ( environment.xapikey == &#39;&#39; ) ) {
 
 constaccessToken = awaitthis.oktaAuthService.getAccessToken();
 
