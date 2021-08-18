@@ -142,14 +142,14 @@ Notice that of these are the same configuration parameters we use in the IRIS FH
 
 The login component relies on the okta signin widget and Okta SDK. The constructor for the login component uses the OktaAuthService and initializes the oktaSignIn component It then waits for a successful response status before redirecting to the OktaCallBackComponent.
 
-[Okta Cache](Images/OktaSignIn.png) .
+![Okta SignIn](Images/OktaSignIn.png) .
 
 
 Note that the sign in component can be customized to provide a logo at the top and through a feature setting can provide a simple registration form and process.
 
 The OktaCallbackComponent caches the access token if registration is successful as shown below with Chrome Development tools.
 
-[Okta Cache](Images/OktaCache.png) .
+![Okta Cache](Images/OktaCache.png) .
 
 If the user successfully logs in, the routes for Patient and Observation retrieval are activated. However, for them to get access to the protected FHIR service, the client applications must send a bearer &quot;access token&quot;.
 
@@ -255,7 +255,7 @@ Patrick W. Jamieson, M.D.
 
 Product Manager, IRIS for Health.
 
-1
+******************************************************************
 
 OKTA FHIR INTEGRATION DEMO
 
