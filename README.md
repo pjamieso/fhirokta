@@ -118,7 +118,7 @@ constroutes: Routes = [
 
 There are two important Okta client libraries, installed with NPM that integrate the client application with the Okta server, okta-angular, and the okta-signin-widget. The Okta Sign-In Widget is a JavaScript widget that provides a customizable login screen to authenticate users of web and mobile applications.
 
-The widget creates a Okta&#39;s signin page. Once signed an Okta session cookie is sent to the web browser. The widget can also perform complete OIDC flow and/or integrate with external identity providers. More information can be found at [https://github.com/okta/okta-signin-widget](https://github.com/okta/okta-signin-widget).
+The widget creates an Okta&#39;s signin page. Once signed an Okta session cookie is sent to the web browser. The widget can also perform complete OIDC flow and/or integrate with external identity providers. More information can be found at [https://github.com/okta/okta-signin-widget](https://github.com/okta/okta-signin-widget).
 
 The Okta-angular library is a complete SDK to add authentication and authorization to our demo application. To use the Okta SDK, we must first configure it with a separate Typescript config file, I chose the name my-okta-config.ts. We must configure a number of fields in a JavaScript object as shown below.
 
@@ -128,9 +128,9 @@ oidc: {
 
 clientId: &#39;0oa1ft32hbJVqlExn5d7&#39;,
 
-issuer: &#39;https://dev-5420746.okta.com/oauth2/aus1g315d02g6rklZ5d7&#39;,
+issuer: &#39;https://dev-5420746.okta.com/oauth2/aus1g315d02g6rklZ5d7;,
 
-redirectUri: &#39;http://localhost:4200/login/callback&#39;,
+redirectUri: &#39;http://localhost:4200/login/callback;,
 
 scopes: [&#39;openid&#39;, &#39;profile&#39;, &#39;email&#39;, &#39;user/\*.read&#39;]
 
@@ -157,7 +157,7 @@ The simplest way to do this is by creating an auth-interceptor-service. The serv
 
 The code below shows how this is done:
 
-private asynchandleAccess( req: HttpRequest\&lt:any, next: HttpHandler ): Promise<<HttpEvent>:any>> {
+private async handleAccess( req: HttpRequest\&lt:any, next: HttpHandler ): Promise<<HttpEvent>:any>> {
 
 //only add an access or key for secured endpoints
 
@@ -247,7 +247,7 @@ Note, that in this case the IRIS FHIR accelerator service returned patients and 
 
 ## Conclusion
 
-Building a single page web application, using FHIR can be done securely through a client security library specific to your application framework, and a knowledgeable security providers. It is helpful to have a strong mix of tools -- a robust FHIR server, such as the IRIS FHIR Accelerator Service, which allows for easy OAuth 2.0 integration, as well as server and client libraries, like OKTA which implement Oauth 2.0 Authorization code flow using PKCE.
+Building a single page web application, using FHIR can be done securely through a client security library specific to your application framework, and knowledgeable security providers. It is helpful to have a strong mix of tools -- a robust FHIR server, such as the IRIS FHIR Accelerator Service, which allows for easy OAuth 2.0 integration, as well as server and client libraries, like OKTA which implement Oauth 2.0 Authorization code flow using PKCE.
 
 If you have any questions, please drop me a line at [patrick.jamieson@intersystems.com](mailto:patrick.jamieson@intersystems.com)
 
