@@ -43,3 +43,8 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+#special config files
+my-okta-config.ts
+environment.ts
+

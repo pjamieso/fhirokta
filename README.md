@@ -1,10 +1,10 @@
 # Oktademo
 
-# OKTA FHIR Integration
+# Okta FHIR Integration
 
 ## INTRODUCTION
 
-This document describes a sample FHIR application, which was developed to provide a template for building an Angular full stack application in a secure manner using OAuth 2.0. A brief introduction to Oauth2.0 concepts is covered. The application is open source and can be downloaded at: [https://github.com/pjamieso/fhirokta](https://github.com/pjamieso/fhirokta). The app uses the IRIS FHIR Accelerator Service, a cloud based FHIR service, which is easy to deploy. The FHIR Accelerator Service has many useful features including:
+This document describes a sample FHIR application, which was developed to provide a template for building an Angular full stack application in a secure manner using OAuth 2.0. A brief introduction to OAuth 2.0 concepts is covered. The application is open source and can be downloaded at: [https://github.com/pjamieso/fhirokta](https://github.com/pjamieso/fhirokta). The app uses the IRIS FHIR Accelerator Service, a cloud based FHIR service, which is easy to deploy. The FHIR Accelerator Service has many useful features including:
 
 • An Enterprise-grade managed FHIR service easily provisioned and launched on AWS
 
@@ -16,7 +16,7 @@ This document describes a sample FHIR application, which was developed to provid
 
 • Support for multiple methods of authentication including API Key Authentication, OAuth 2.0, and OpenID connect
 
-• Bulk import of FHIR bundles via S3.
+• Bulk import of FHIR bundles via S3
 
 • Logging of FHIR request data
 
@@ -24,17 +24,17 @@ Developers can try the service for free by signing up at [https://portal.trial.i
 
 The application addresses a practical problem, how to securely retrieve personal health information (PHI), stored in a FHIR server. OAuth 2.0 is a modern security framework enabling distributed authentication and authorization and is the current reigning standard in web security.
 
-However, building an OAuth2.0 application from scratch can be tricky, since development of low-level security code is complex. Nevertheless, there are several good choices for developers, include working with vendor specific libraries, or open-source libraries like [https://github.com/manfredsteyer/angular-OAuth2-oidc](https://github.com/manfredsteyer/angular-oauth2-oidc).
+However, building an OAuth 2.0 application from scratch can be tricky, since development of low-level security code is complex. Nevertheless, there are several good choices for developers, include working with vendor specific libraries, or open-source libraries like [https://github.com/manfredsteyer/angular-OAuth2-oidc](https://github.com/manfredsteyer/angular-oauth2-oidc).
 
 This demo uses the OAuth security server and client library developed by Okta. Okta is well known security provider integrating with many different languages and technologies. Their service features a policy engine that allows administrators complete control over how access is granted and managed. Okta integrates seamlessly with many platforms and devices. Best of all, you can use their service for small scale development for free, see [https://www.okta.com/](https://www.okta.com/).
 
 Okta also supports user management, login and registration out of the box. These essential security features would require considerable development if done from scratch.
 
-This document is organized into several sections, to walk you through enabling your full stack Angular FHIR application working with Oauth 2.0:
+This document is organized into several sections, to walk you through enabling your full stack Angular FHIR application working with OAuth 2.0:
 
-- OAUTH Concepts and workflow
-- Creating a Custom OKTA Authorization Server
-- Registering your application with OKTA
+- OAuth Concepts and workflow
+- Creating a Custom Okta Authorization Server
+- Registering your application with Okta
 - Registering an OAuth Authentication Server with the IRIS FHIR accelerator service
 - Basic Client Okta Auth App Framework
 - Viewing the Application&#39;s Main Page and Understanding the JWT Token
@@ -60,7 +60,7 @@ Other common OAuth 2.0 terms include:
 - **Client** : The client is the system that requires access to the protected resources. To access resources, the client must hold the appropriate access token. The demo client is our Angular Application for retrieving and displaying patients and their observations.
 - **Authorization Server** : The server that receives requests from the Client for Access Tokens and issues them upon successful authentication and **consent** by the Resource Owner. The authorization server exposes two endpoints: the Authorization endpoint, which handles authentication and consent of the user, and the Token endpoint, which is involved in a machine-to-machine interaction. The Okta authorization server supplies both of these endpoints.
 - **Resource Server** : A server that protects the user&#39;s resources and receives access requests from the Client. It accepts and validates an access token from the client and returns the appropriate resources to it. The resource server in this demo is the cloud-based IRIS FHIR accelerator service.
-- **Resource Scopes** : Scopes are used to specify exactly what access to resources may be granted. Acceptable scope values, and the resources they relate to, are dependent on the **Resource Server**. Examples used in this demo include: openid, profile, user/Patient.read.
+- **Scopes** : Scopes are used to specify exactly what access to resources may be granted. Acceptable scope values, and the resources they relate to, are dependent on the **Resource Server**. Examples used in this demo include: openid, profile, user/Patient.read.
 
 ![Okta Sequence Diagram](Images/OktaSequence.png)
 
@@ -68,7 +68,7 @@ A sequence diagram shows how these actors relate. The diagram depicts the OAuth 
 
 ## Creating a Custom Okta Authorization Server
 
-For our application to create the proper JWT token that can be understood by the IRIS FHIR Accelerator Service, **we must create a custom** Okta Authorization Server. After creating your free Okta account, login and under the security tab, click on +Add Authorization Server.
+For our application to create the proper JWT token that can be understood by the IRIS FHIR Accelerator Service, **we must create a custom** Okta Authorization Server, [https://www.okta.com/login/]. After creating your free Okta account, login and under the security tab, click on +Add Authorization Server.
 
 ![Okta Custom Authorization Server](Images/OktaCustomServer.png)
 
@@ -80,7 +80,7 @@ The next property we must set up in our custom Okta authorization server are cla
 
 The &quot;scope&quot; claim should be set to the string: &quot;openid profile email user/\*.read&quot;. Notice the scope claims values are delimited by whitespace. Instead of creating a static string, we can use the Okta expression language to populate the scope value, String.replace(Arrays.toCsvString(access.scope),","," "). The &quot;openid&quot;, &quot;profile&quot;, and &quot;email&quot; are used by OpenID Connect to return user information. The &quot;user/\*.read&quot; scope indicates we wish to give the user read access to all the FHIR resources on the server. If we want to limit access to just particular resources, we could formulate scopes such as &quot;user/Patient.read user/Observation.read user/Encounter.write&quot;, etc. We could also limit the scope to just the resources that match the id of the logged in user, by formulating a scope with &quot;patient/\*.read&quot;. Okta also has the ability to add scopes, but this mechanism should be avoided since the scopes are added to the claim &quot;scp&quot; in a comma delimited array not recognized by the IRIS FHIR Accelerator service. Another tab in the Okta Custom Server is &quot;Access Policies&quot;. Okta provides for granular user/client access. For now, set the Auth Code Access to &quot;All Clients&quot;.
 
-We also need to allow Cross-Origin Resource Sharing (CORS) for our single page web application. CORS is an HTTP-header based mechanism that allows a server to indicate which origins (domain, scheme, or port), other than its own, from which a browser should permit loading resources. CORS relies on a mechanism by which browsers make a &quot;preflight&quot; request to the server hosting the cross-origin resource, to check that the server will permit the actual request. In the preflight, the browser sends headers that will be used in the actual request. If you open up chrome development tools under the network tab you can see these preflight requests. Under the Okta API management tab, you can add trusted origins. We need to add &quot;http://localhost:4200&quot; so that our token requests from our sample angular application are not blocked.
+We also need to allow Cross-Origin Resource Sharing (CORS) for our single page web application. CORS is an HTTP-header based mechanism that allows a server to indicate which origins (domain, scheme, or port), other than its own, from which a browser should permit loading resources. CORS relies on a mechanism by which browsers make a &quot;preflight&quot; request to the server hosting the cross-origin resource, to check that the server will permit the actual request. In the preflight, the browser sends headers that will be used in the actual request. If you open up Chrome development tools under the network tab you can see these preflight requests. Under the Okta API management tab, you can add trusted origins. We need to add &quot;http://localhost:4200&quot; so that our token requests from our sample angular application are not blocked.
 
 ## Registering an application with Okta
 
@@ -90,11 +90,11 @@ After the user is logged in, Okta will send tokens to an endpoint of our choosin
 
 ## Registering an OAuth Authentication Server in the IRIS FHIR Accelerator Service
 
-The IRIS FHIR Accelerator Service has an OAuth2.0 tab, which allows us to register different Authentication/Authorization Servers. Since we have already configured an OKTA authorization server, we merely need to &quot;_create_&quot; an authentication server (choosing the OKTA external authentication server) and provide the Issuer Discovery URL, which in our example was generated by Okta as [https://dev-5420746.okta.com/OAuth2/aus1g315d02g6rklZ5d7](https://dev-5420746.okta.com/oauth2/aus1g315d02g6rklZ5d7). (your url is unique and slightly different)
+The IRIS FHIR Accelerator Service has an OAuth 2.0 tab, which allows us to register different Authentication/Authorization Servers. Since we have already configured an Okta authorization server, we merely need to &quot;_create_&quot; an authentication server (choosing the Okta external authentication server) and provide the Issuer Discovery URL, which in our example was generated by Okta as [https://dev-5420746.okta.com/OAuth2/aus1g315d02g6rklZ5d7](https://dev-5420746.okta.com/oauth2/aus1g315d02g6rklZ5d7). (your url is unique and slightly different)
 
 We also must register our application with the IRIS FHIR Accelerator server using the OktaAuthServer we just created. We can use any name we like but be sure to choose the OktaAuthServer with the above issuer discovery url. The redirect url should match what we configured on the Okta custom server we created: [http://localhost:4200/login/callback](http://localhost:4200/login/callback), and for logout: [http://localhost:4200](http://localhost:4200/). The client id is the id for the registered Okta application, which for this example is: 0oa1ft32hbJVqlExn5d7. The client secret field should be left blank, since it does not apply to the Authorization Code grant type with PKCE.
 
-We have now completed all the server configurations for using OAuth2.0 in the IRIS FHIR Accelerator Service and with OKTA.
+We have now completed all the server configurations for using OAuth 2.0 in the IRIS FHIR Accelerator Service and with OKTA.
 
 ## Basic Client Okata Auth APP Framework
 
@@ -247,7 +247,7 @@ Note, that in this case the IRIS FHIR accelerator service returned patients and 
 
 ## Conclusion
 
-Building a single page web application, using FHIR can be done securely through a client security library specific to your application framework, and knowledgeable security providers. It is helpful to have a strong mix of tools -- a robust FHIR server, such as the IRIS FHIR Accelerator Service, which allows for easy OAuth 2.0 integration, as well as server and client libraries, like OKTA which implement Oauth 2.0 Authorization code flow using PKCE.
+Building a single page web application, using FHIR can be done securely through a client security library specific to your application framework, and knowledgeable security providers. It is helpful to have a strong mix of tools -- a robust FHIR server, such as the IRIS FHIR Accelerator Service, which allows for easy OAuth 2.0 integration, as well as server and client libraries, like OKTA which implement OAuth 2.0 Authorization code flow using PKCE.
 
 If you have any questions, please drop me a line at [patrick.jamieson@intersystems.com](mailto:patrick.jamieson@intersystems.com)
 

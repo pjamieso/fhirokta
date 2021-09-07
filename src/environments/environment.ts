@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  fhirbaseUrl: "https://fhirauth.bmt7d3c9csfz.static-test-account.isccloud.io/oauth2",
+  fhirbaseUrl: "https://fhirauth.68wxc790mdh6.static-test-account.isccloud.io/oauth2",
   xapikey: ''
 };
 
