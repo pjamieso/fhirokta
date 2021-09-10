@@ -20,7 +20,7 @@ This document describes a sample FHIR application, which was developed to provid
 
 • Logging of FHIR request data
 
-Developers can try the service for free by signing up at [https://portal.trial.isccloud.io/account/login](https://portal.trial.isccloud.io/account/login)
+Developers can try the service for free by signing up at [https://portal.live.isccloud.io/account/login](https://portal.live.isccloud.io/account/login)
 
 The application addresses a practical problem, how to securely retrieve personal health information (PHI), stored in a FHIR server. OAuth 2.0 is a modern security framework enabling distributed authentication and authorization and is the current reigning standard in web security.
 
